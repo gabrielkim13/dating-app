@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.Interfaces;
+using api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,6 +36,8 @@ namespace api
             });
 
             services.AddCors();
+
+            services.AddScoped<ITokenService, TokenService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

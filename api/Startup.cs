@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using api.Data;
+using api.Extensions;
 using api.Interfaces;
 using api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -33,28 +34,11 @@ namespace api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(options =>
-            {
-                options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
-            });
-
+            services.AddApplicationServices(_config);
+            services.AddIdentityServices(_config);
             services.AddCors();
-
-            services.AddScoped<ITokenService, TokenService>();
-            
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["TokenKey"])),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
-                    };
-                });
-
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });

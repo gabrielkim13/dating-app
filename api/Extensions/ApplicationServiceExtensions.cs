@@ -1,24 +1,29 @@
 using api.Data;
+using api.Helpers;
 using api.Interfaces;
 using api.Services;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace api.Extensions
 {
-    public static class ApplicationServiceExtensions
+  public static class ApplicationServiceExtensions
+  {
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config) 
-        {
-            services.AddScoped<ITokenService, TokenService>();
-            
-            services.AddDbContext<DataContext>(options =>
-            {
-                options.UseSqlite(config.GetConnectionString("DefaultConnection"));
-            });
+      services.AddScoped<ITokenService, TokenService>();
+      services.AddScoped<IUserRepository, UserRepository>();
 
-            return services;
-        }
+      services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
+
+      services.AddDbContext<DataContext>(options =>
+      {
+        options.UseSqlite(config.GetConnectionString("DefaultConnection"));
+      });
+
+      return services;
     }
+  }
 }

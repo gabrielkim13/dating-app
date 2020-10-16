@@ -17,34 +17,27 @@ export class AccountService {
   constructor(private http: HttpClient) { }
 
   login(model: any) {
-    return this.http.post(this.baseUrl + 'account/login', model).pipe(
-      map((user: User) => {
+    return this.http.post<User>(this.baseUrl + 'account/login', model).pipe(
+      map(user => {
         if (user) {
-          localStorage.setItem('@DatingApp:user', JSON.stringify(user));
-
-          this.currentUserSource.next(user);
+          this.setCurrentUser(user);
         }
-
-        return user;
       })
     );
   }
 
   register(model: any) {
-    return this.http.post(this.baseUrl + 'account/register', model).pipe(
-      map((user: User) => {
+    return this.http.post<User>(this.baseUrl + 'account/register', model).pipe(
+      map(user => {
         if (user) {
-          localStorage.setItem('@DatingApp:user', JSON.stringify(user));
-
-          this.currentUserSource.next(user);
+          this.setCurrentUser(user);
         }
-
-        return user;
       })
     );
   }
 
   setCurrentUser(user: User) {
+    localStorage.setItem('@DatingApp:user', JSON.stringify(user));
     this.currentUserSource.next(user);
   }
 

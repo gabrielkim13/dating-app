@@ -39,4 +39,12 @@ export class MembersService {
       this.members = this.members.map(mapMember => mapMember.id === member.id ? member : mapMember);
     }));
   }
+
+  setMainPhoto(photoId: number) {
+    return this.http.put(this.baseUrl + `users/set-main-photo/${photoId}`, {});
+  }
+
+  deletePhoto(photoId: number) {
+    return this.http.delete(this.baseUrl + `users/delete-photo/${photoId}`);
+  }
 }

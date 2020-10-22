@@ -1,5 +1,56 @@
+<div class="text-center mt-3">
+  <h2>Your matches - {{pagination?.totalCount}} found</h2>
+</div>
+
+<div class="container mt-3">
+  <form #form="ngForm" class="form-inline mb-3" (ngSubmit)="loadMembers()" autocomplete="off">
+    <div class="form-group">
+      <label for="minAge">Age from:</label>
+      <input name="minAge" type="number" class="form-control ml-1" style="width: 70px;"
+        [(ngModel)]="userParams.minAge" />
+    </div>
+
+    <div class="form-group px-2">
+      <label for="maxAge">Age to:</label>
+      <input name="maxAge" type="number" class="form-control ml-1" style="width: 70px;"
+        [(ngModel)]="userParams.maxAge" />
+    </div>
+
+    <div class="form-group px-2">
+      <label for="gender">Show:</label>
+      <select name="gender" class="form-control ml-1" style="width: 130px;" [(ngModel)]="userParams.gender">
+        <option *ngFor="let gender of genderList" value="{{gender.value}}">{{gender.display}}</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary ml-1">Apply</button>
+    <button type="button" class="btn btn-info ml-1" (click)="resetFilters()">Reset</button>
+
+    <div class="col">
+      <div class="btn-group float-right">
+        <button class="btn btn-primary" type="button" name="orderBy" [(ngModel)]="userParams.orderBy"
+          btnRadio="lastActive" (click)="loadMembers()">
+          Last Active
+        </button>
+        <button class="btn btn-primary" type="button" name="orderBy" [(ngModel)]="userParams.orderBy" btnRadio="created"
+          (click)="loadMembers()">
+          Newest Members
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
 <div class="row">
-  <div class="col-2" *ngFor="let member of (members$ | async)">
+  <div class="col-2" *ngFor="let member of (members)">
     <app-member-card [member]="member"></app-member-card>
   </div>
+</div>
+
+<div class="d-flex justify-content-center" *ngIf="pagination">
+  <pagination [boundaryLinks]="true" [totalItems]="pagination.totalCount" [itemsPerPage]="pagination.pageSize"
+    [(ngModel)]="pagination.currentPage" (pageChanged)="pageChanged($event)" previousText="&lsaquo;" nextText="&rsaquo;"
+    firstText="&laquo;" lastText="&raquo;">
+
+  </pagination>
 </div>

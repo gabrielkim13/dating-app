@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using api.Data;
 using api.DTOs;
 using api.Entities;
+using api.Extensions;
 using api.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -71,6 +72,8 @@ namespace api.Controllers
         Token = _tokenService.CreateToken(user),
         PhotoUrl = user.Photos.FirstOrDefault(photo => photo.IsMain)?.Url,
         KnownAs = user.KnownAs,
+        Gender = user.Gender,
+        Age = user.DateOfBirth.CalculateAge(),
       };
     }
 

@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 
 import { User } from '../_models/user';
 import { environment } from 'src/environments/environment';
+import { isArray } from 'ngx-bootstrap/chronos';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,15 @@ export class AccountService {
   }
 
   setCurrentUser(user: User) {
+    user.roles = [];
+
+    const tokenRole = this.getDecodedToken(user.token).role;
+
+    if (Array.isArray(tokenRole))
+      user.roles = tokenRole;
+    else
+      user.roles.push(tokenRole);
+
     localStorage.setItem('@DatingApp:user', JSON.stringify(user));
     this.currentUserSource.next(user);
   }
@@ -45,5 +55,9 @@ export class AccountService {
     localStorage.removeItem('@DatingApp:user');
 
     this.currentUserSource.next(null);
+  }
+
+  getDecodedToken(token: string) {
+    return JSON.parse(atob(token.split('.')[1]));
   }
 }

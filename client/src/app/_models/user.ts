@@ -5,4 +5,5 @@ export interface User {
   knownAs: string;
   gender: string;
   age: number;
+  roles: string[];
 }

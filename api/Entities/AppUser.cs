@@ -10,9 +10,9 @@ namespace api.Entities
 
     public string KnownAs { get; set; }
 
-    public DateTime Created { get; set; } = DateTime.Now;
+    public DateTime Created { get; set; } = DateTime.UtcNow;
 
-    public DateTime LastActive { get; set; } = DateTime.Now;
+    public DateTime LastActive { get; set; } = DateTime.UtcNow;
 
     public string Gender { get; set; }
 

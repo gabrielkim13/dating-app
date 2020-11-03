@@ -16,7 +16,7 @@ namespace api.Entities
 
     public string Content { get; set; }
 
-    public DateTime DateSent { get; set; } = DateTime.Now;
+    public DateTime DateSent { get; set; } = DateTime.UtcNow;
     public DateTime? DateRead { get; set; }
 
     public bool SenderDeleted { get; set; }

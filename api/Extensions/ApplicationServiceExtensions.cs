@@ -2,6 +2,7 @@ using api.Data;
 using api.Helpers;
 using api.Interfaces;
 using api.Services;
+using api.SignalR;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,8 @@ namespace api.Extensions
   {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
     {
+      services.AddSingleton<PresenceTracker>();
+
       services.AddScoped<ITokenService, TokenService>();
       services.AddScoped<IUserRepository, UserRepository>();
       services.AddScoped<ILikesRepository, LikesRepository>();

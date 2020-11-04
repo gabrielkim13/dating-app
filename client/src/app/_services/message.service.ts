@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { Group } from '../_models/group';
 import Message from '../_models/messages';
 import { User } from '../_models/user';
+import { BusyService } from './busy.service';
 import { getPaginatedResult, getPaginationParams } from './paginationHelper';
 
 @Injectable({
@@ -22,9 +23,11 @@ export class MessageService {
 
   messageThread$ = this.messageThreadSource.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private busyService: BusyService) { }
 
   createHubConnection(sender: User, recipientName: string) {
+    this.busyService.busy();
+
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(this.hubUrl + `messages?user=${recipientName}`, {
         accessTokenFactory: () => sender.token
@@ -32,7 +35,9 @@ export class MessageService {
       .withAutomaticReconnect()
       .build();
 
-    this.hubConnection.start().catch(error => console.error(error));
+    this.hubConnection.start()
+      .catch(error => console.error(error))
+      .finally(() => this.busyService.idle());
 
     this.hubConnection.on("ReceiveMessageThread", (messageThread: Message[]) => {
       this.messageThreadSource.next(messageThread);
@@ -57,7 +62,10 @@ export class MessageService {
   }
 
   stopHubConnection() {
-    this.hubConnection?.stop();
+    if (this.hubConnection) {
+      this.messageThreadSource.next([]);
+      this.hubConnection.stop();
+    }
   }
 
   getMessages(pageNumber: number, pageSize: number, container?: ("Inbox" | "Outbox" | "Unread")) {
